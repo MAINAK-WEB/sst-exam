@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EXAM</title>
+   <style>
+body{
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background:#f4f6f9;
+    margin:0;
+    padding:0;
+}
+
+.exam-container{
+    max-width:700px;
+    margin:20px auto;
+    background:#ffffff;
+    padding:20px;
+    border-radius:10px;
+    box-shadow:0 4px 10px rgba(0,0,0,0.1);
+}
+
+h2{
+    text-align:center;
+    color:#2c3e50;
+    margin-bottom:20px;
+}
+
+.question{
+    background:#fafafa;
+    border:1px solid #e0e0e0;
+    padding:15px;
+    border-radius:8px;
+    margin-bottom:15px;
+}
+
+.question p{
+    font-weight:600;
+    margin-bottom:10px;
+    color:#333;
+}
+
+.question input[type="radio"]{
+    margin-right:8px;
+}
+
+.question label{
+    display:block;
+    padding:8px 10px;
+    margin-bottom:6px;
+    border-radius:6px;
+    cursor:pointer;
+    border:1px solid transparent;
+}
+
+.question label:hover{
+    background:#eef4ff;
+    border-color:#c9d9ff;
+}
+
+button{
+    background:#2563eb;
+    color:white;
+    border:none;
+    padding:14px;
+    width:100%;
+    font-size:17px;
+    border-radius:8px;
+    cursor:pointer;
+    margin-top:20px;
+}
+
+button:hover{
+    background:#1e40af;
+}
+
+#result{
+    margin-top:25px;
+    font-size:20px;
+    text-align:center;
+    font-weight:700;
+    color:#16a34a;
+}
+.question label.selected{
+    background-color: #dbeafe;
+    border-color: #2563eb;
+}
+</style>
+</head>
+<script>
+let examSubmitted = false;
+
+function SubmitQuiz(){
+
+    if(examSubmitted){
+        return; // already submitted হলে আর কিছু হবে না
+    }
+
+    let score = 0;
+    let attempted = 0;
+    let total = 40;
+
+    for(let i = 1; i <= total; i++){
+        let selected = document.querySelector('input[name="q'+i+'"]:checked');
+        if(selected){
+            attempted++;
+            score += parseInt(selected.value);
+        }
+    }
+
+    let unattempted = total - attempted;
+
+    if(unattempted > 0){
+        let sure = confirm(
+            "You have " + unattempted +
+            " unanswered questions.\nDo you want to submit?"
+        );
+        if(!sure){
+            return;
+        }
+    }
+
+    examSubmitted = true; // 🔒 EXAM LOCKED
+
+    let resultDiv = document.getElementById("result");
+    let infoDiv   = document.getElementById("attemptInfo");
+
+    if(score < 25){
+        resultDiv.innerHTML = "FAILED ❌ | Your Score: " + score + " / 40";
+        resultDiv.style.color = "red";
+    }else{
+        resultDiv.innerHTML = "PASSED ✅ | Your Score: " + score + " / 40";
+        resultDiv.style.color = "green";
+    }
+
+    infoDiv.innerHTML =
+        "Attempted: " + attempted +
+        " | Unattempted: " + unattempted;
+
+    // 🔒 HARD LOCK ALL OPTIONS
+    document.querySelectorAll('input[type="radio"]').forEach(radio=>{
+        radio.disabled = true;
+    });
+
+    // 🔒 ALL BUTTON DISABLE
+    document.querySelectorAll('button').forEach(btn=>{
+        btn.disabled = true;
+    });
+}
+
+
+// ❌ BLOCK ANY CHANGE AFTER SUBMIT (EXTRA SAFETY)
+document.addEventListener('change', function(e){
+    if(examSubmitted && e.target.type === "radio"){
+        e.target.checked = false;
+    }
+});
+</script>
+
+<body>
+    <div class="exam-container">
+        <h2>SST MCQ EXAM</h2>
+        <form id="quiz">
+            <div class="question">
+                <p>1.The gender division is based on</p>
+                <input type="radio" name="q1" value="1">Social expectations and stereotype<br>
+                <input type="radio" name="q1" value="0">biology<br>
+                <input type="radio" name="q1" value="0">religion<br>
+                <input type="radio" name="q1" value="0">caste<br>
+            </div>
+            <div class="question">
+                <p>2.The Average Child sex Ratio in The Country is </p>
+                <input type="radio" name="q2" value="1">919<br>
+                <input type="radio" name="q2" value="0">924<br>
+                <input type="radio" name="q2" value="0">954<br>
+                <input type="radio" name="q2" value="0">929<br>
+            </div>
+            <div class="question">
+                <p>3.Who said 'religion can never be separated from politics.'</p>
+                <input type="radio" name="q3" value="0">Ambedkar<br>
+                <input type="radio" name="q3" value="1">Gandhiji<br>
+                <input type="radio" name="q3" value="0">Nehru<br>
+                <input type="radio" name="q3" value="0">Jotiba Phule<br>
+
+            </div>
+            <div class="question">
+                <p>4.Men are ready to take up the works like cooking, cleaning, washing clothes, tailoring etc
+                    when it is
+                </p>
+                <input type="radio" name="q4" value="0">not valued<br>
+                <input type="radio" name="q4" value="1">paid<br>
+                <input type="radio" name="q4" value="0">not get recognition.<br>
+                <input type="radio" name="q4" value="0">unpaid<br>
+            </div>
+            <div class="question">
+                <p>5.__________is official religion for the Sri Lanka.</p>
+                <input type="radio" name="q5" value="0">Hinduism<br>
+                <input type="radio" name="q5" value="1">Buddhism<br>
+                <input type="radio" name="q5" value="0">Sikhism<br>
+                <input type="radio" name="q5" value="0">Christianity<br>
+
+            </div>
+            <div class="question">
+                <p>6.'Upper Caste' here means those who are not from</p>
+                <input type="radio" name="q6" value="0">SC<br>
+                <input type="radio" name="q6" value="0">ST<br>
+                <input type="radio" name="q6" value="0">OBC<br>
+                <input type="radio" name="q6" value="1">None of these<br>
+
+            </div>
+            <div class="question">
+                <p>7.Which is not leading to the breakdown of caste hierarchy?</p>
+                <input type="radio" name="q7" value="0">Large-scale urbanisation<br>
+                <input type="radio" name="q7" value="0"> Occupational mobility<br>
+                <input type="radio" name="q7" value="0">Growth of literacy and education<br>
+                <input type="radio" name="q7" value="1">practice of untouchability<br>
+
+            </div>
+            <div class="question">
+                <p>8.Shift of population from Rural areas to Town and City areas is known as</p>
+                    <input type="radio" name="q8" value="0">Industrialistion<br>
+                    <input type="radio" name="q8" value="1">Urbanisation<br>
+                    <input type="radio" name="q8" value="0">Mordernisation<br>
+                    <input type="radio" name="q8" value="0">Sanitation<br>
+
+            </div>
+            <div class="question">
+                <p>9.The Equal Remuneration Act, of _________provides that equal wages should be paid to
+                    equal work.
+                </p>
+                <input type="radio" name="q9" value="0">1975<br>
+                <input type="radio" name="q9" value="0">1974<br>
+                <input type="radio" name="q9" value="1">1976<br>
+                <input type="radio" name="q9" value="0">1977<br>
+
+            </div>
+            <div class="question">
+                <p>10.In politics, the representation of women in different state legislative assemblies in India is</p>
+                <input type="radio" name="q10" value="0">More Than 5%<br>
+                <input type="radio" name="q10" value="0">5%<br>
+                <input type="radio" name="q10" value="1">Less Than 5%<br>
+                <input type="radio" name="q10" value="0">10%<br>
+
+            </div>
+            <div class="question">
+                <p>11.Ground water is an example of</p>
+                <input type="radio" name="q11" value="1">Renewable resource<br>
+                <input type="radio" name="q11" value="0">Non-renewable resource<br>
+                <input type="radio" name="q11" value="0">none of them<br>
+                <input type="radio" name="q11" value="0">Permanent resource<br>
+
+            </div>
+            <div class="question">
+                <p>12.Literacy of Bihar in the year 2017-18 was.....</p>
+                <input type="radio" name="q12" value="0">63%<br>
+                <input type="radio" name="q12" value="1">62%<br>
+                <input type="radio" name="q12" value="0">64%<br>
+                <input type="radio" name="q12" value="0">65%<br>
+
+            </div>
+            <div class="question">
+                <p>13.The countries of Middle East has highest reserves in the world, they may last for_______
+                    number of years.</p>
+                <input type="radio" name="q13" value="0">40<br>
+                <input type="radio" name="q13" value="1">50<br>
+                <input type="radio" name="q13" value="0">65<br>
+                <input type="radio" name="q13" value="0">70<br>
+
+            </div>
+            <div class="question">
+                <p>14.Kerala has low infant Mortality Rate because</p>
+                <input type="radio" name="q14" value="0"> it has good climatic condition<br>
+                <input type="radio" name="q14" value="0">it has adequate infrastructure<br>
+                <input type="radio" name="q14" value="0">it has greater net attendance ratio<br>
+                <input type="radio" name="q14" value="1">t has adequate provision of basic health and educational
+                facilities<br>
+            </div>
+            <div class="question">
+                <p>15.Proportion of literacy population in the 7 and above age group is called as </p>
+                <input type="radio" name="q15" value="0">Knowledge Rate<br>
+                <input type="radio" name="q15" value="0">Attendance Rate<br>
+                <input type="radio" name="q15" value="1">literacy Rate<br>
+                <input type="radio" name="q15" value="0">Excellence Rate<br>
+
+            </div>
+            <div class="question">
+                <p>16.HDI Rank of India in the world out of 193 countries in 2021-22 was
+                </p>
+                <input type="radio" name="q16" value="0">133<br>
+                <input type="radio" name="q16" value="0">136<br>
+                <input type="radio" name="q16" value="1">134<br>
+                <input type="radio" name="q16" value="0">135<br>
+
+            </div>
+            <div class="question">
+                <p>17.If BMI is less than 15.2 then the person </p>
+                <input type="radio" name="q17" value="0">Overweight<br>
+                <input type="radio" name="q17" value="0">Long height<br>
+                <input type="radio" name="q17" value="0"> Short height<br>
+                <input type="radio" name="q17" value="1">Under nourished<br>
+
+            </div>
+
+
+            <div class="question">
+                <p>18.Which of the following best explains the idea of Satyagraha </p>
+                <input type="radio" name="q18" value="0"> Applying physical force to cause pain while resisting.<br>
+                <input type="radio" name="q18" value="1">Resisting injustice peacefully without causing harm.<br>
+                <input type="radio" name="q18" value="0"> Accepting oppression as a sign of weakness.<br>
+                <input type="radio" name="q18" value="0">A movement based on racial discrimination.<br>
+
+            </div>
+            <div class="question">
+                <p>19.Why was the Khilafat Committee founded in 1919 at Bombay? </p>
+                <input type="radio" name="q19" value="1"> To protest against the Rowlatt Act.<br>
+                <input type="radio" name="q19" value="0"> To demand reduction of land revenue.<br>
+                <input type="radio" name="q19" value="0"> To defend the temporal powers of the Ottoman Khalifa.<br>
+                <input type="radio" name="q19" value="0">To launch the Civil Disobedience Movement.<br>
+
+            </div>
+            <div class="question">
+                <p>20.What does the term 'Begar' refer to? </p>
+                <input type="radio" name="q20" value="0">Law preventing plantation workers from leaving tea gardens.<br>
+                <input type="radio" name="q20" value="0">Forced recruitment of soldiers during World War I.<br>
+                <input type="radio" name="q20" value="1"> Unpaid labour imposed on villagers.<br>
+                <input type="radio" name="q20" value="0">Refusal to participate as a form of protest.<br>
+            </div>
+            <div class="question">
+                <p>21.Why was salt chosen as a symbol of revolution during Civil Disobedience Movement? </p>
+                <input type="radio" name="q21" value="0">Salt was very costly<br>
+                <input type="radio" name="q21" value="1">Salt was something consumed by the rich and poor <br>
+                <input type="radio" name="q21" value="0"> salt was rarely available in india <br>
+                <input type="radio" name="q21" value="0">Indian Salt has more demand in market.<br>
+            </div>
+            <div class="question">
+                <p>22.Why did the movement to revive Indian floklore gain momentum in the late 19th century ? </p>
+                <input type="radio" name="q22" value="0">To promote only Religious texts <br>
+                <input type="radio" name="q22" value="0"> To prove India's scientific achivements <br>
+                <input type="radio" name="q22" value="1"> To preserve traditional cluture and reclaim national identity
+                <br>
+                <input type="radio" name="q22" value="0">all of the avobe.<br>
+            </div>
+            <div class="question">
+                <p>23.which slogan did Gandhiji give during the Quit India Movement that stirred the masses into action?
+                </p>
+                <input type="radio" name="q23" value="0"> Swaraj is my birthright <br>
+                <input type="radio" name="q23" value="1"> Do or Diet <br>
+                <input type="radio" name="q23" value="0"> Inquilab Zindabady <br>
+                <input type="radio" name="q23" value="0">Vande Mataram.<br>
+            </div>
+            <div class="question">
+                <p>24.In the tricolour flag designed during the Swadeshi movement in Bengal, the crescent moon
+                    represeted:
+                </p>
+                <input type="radio" name="q24" value="1"> Hindu-Muslim unity <br>
+                <input type="radio" name="q24" value="0"> A symbol of rebellion <br>
+                <input type="radio" name="q24" value="0"> Peace and prosperity <br>
+                <input type="radio" name="q24" value="0">The royal family<br>
+            </div>
+            <div class="question">
+                <p>25.What did most Indian industrialists expect from swaraj? </p>
+                <input type="radio" name="q25" value="0"> A complete end to social divisions<br>
+                <input type="radio" name="q25" value="0"> Increase in workers' rights <br>
+                <input type="radio" name="q25" value="1"> Removal of colonial restrictions on business <br>
+                <input type="radio" name="q25" value="0">Government support for foreign trade<br>
+            </div>
+            <div class="question">
+                <p>26.The Simon Commission arrived in India in________without a single Indian member. </p>
+                <input type="radio" name="q26" value="0"> 1926<br>
+                <input type="radio" name="q26" value="0"> 1925 <br>
+                <input type="radio" name="q26" value="0"> 1927 <br>
+                <input type="radio" name="q26" value="1">1928<br>
+            </div>
+            <div class="question">
+                <p>27.The Quit India Movement was launched in the year __________ </p>
+                <input type="radio" name="q27" value="1"> 1942<br>
+                <input type="radio" name="q27" value="0"> 1941 <br>
+                <input type="radio" name="q27" value="0"> 1939 <br>
+                <input type="radio" name="q27" value="0">1944<br>
+            </div>
+            <div class="question">
+                <p>28.Who among the following were associated with the Swaraj Party? </p>
+                <input type="radio" name="q28" value="0"> C.R. Das and Mahatma Gandhi<br>
+                <input type="radio" name="q28" value="1"> C.R. Das and Motilal Nehru <br>
+                <input type="radio" name="q28" value="0"> Motilal Nehru and Jawaharlal Nehru<br>
+                <input type="radio" name="q28" value="0">Mahatma Gandhi and Jawaharlal Nehru <br>
+            </div>
+            <div class="question">
+                <p>29.When was the Indian Chambers of Commerce and Industries set up </p>
+                <input type="radio" name="q29" value="0"> 1925<br>
+                <input type="radio" name="q29" value="0"> 1926<br>
+                <input type="radio" name="q29" value="1"> 1927<br>
+                <input type="radio" name="q29" value="0">1928 <br>
+            </div>
+            <div class="question">
+                <p>30.The organization that Bhagat Singh, Jatin Das, and Ajoy Ghosh founded in Delhi in 1928 was </p>
+                <input type="radio" name="q30" value="0"> NCP<br>
+                <input type="radio" name="q30" value="0"> FICCI<br>
+                <input type="radio" name="q30" value="0">SHG <br>
+                <input type="radio" name="q30" value="1">HRSA<br>
+            </div>
+            <div class="question">
+                <p>31.Who created the first image of Bharat Mata? </p>
+                <input type="radio" name="q31" value="1">Bankim Chandra Chattopadhyay<br>
+                <input type="radio" name="q31" value="0"> Rabindranath Tagore<br>
+                <input type="radio" name="q31" value="0">Raja Ravi Verma <br>
+                <input type="radio" name="q31" value="0">Subhas Chandra Bose<br>
+            </div>
+            <div class="question">
+                <p>32.Who Painted the first image of Bharat Mata? </p>
+                <input type="radio" name="q32" value="1">Bankim Chandra Chattopadhyay<br>
+                <input type="radio" name="q32" value="0"> Abanindra nath Tagore<br>
+                <input type="radio" name="q32" value="0">Raja Ravi Verma <br>
+                <input type="radio" name="q32" value="0">Subhas Chandra Bose<br>
+            </div>
+            <div class="question">
+                <p>33.Plant species of a particular region are referred to as </p>
+                <input type="radio" name="q33" value="0"> Ecosystem<br>
+                <input type="radio" name="q33" value="0"> Fauna<br>
+                <input type="radio" name="q33" value="0">Biodiversity <br>
+                <input type="radio" name="q33" value="1">None of them <br>
+            </div>
+            <div class="question">
+                <p>34.Unclassed forests are mainly found in____________</p>
+                <input type="radio" name="q34" value="1"> All North-eastern states and parts of Gujarat<br>
+                <input type="radio" name="q34" value="0"> Kerala and Tamil Nadu<br>
+                <input type="radio" name="q34" value="0"> Punjab and Haryana <br>
+                <input type="radio" name="q34" value="0">None of them <br>
+            </div>
+            <div class="question">
+                <p>35.Sacred Groves are:</p>
+                <input type="radio" name="q35" value="0"> Places for grazing animals<br>
+                <input type="radio" name="q35" value="1"> parts of large forests that have been left untouched by the
+                local
+                peopl<br>
+                <input type="radio" name="q35" value="0"> forest earmarked for commercial felling of tress<br>
+                <input type="radio" name="q35" value="0">Forests used for planting trees with medicinal properties<br>
+            </div>
+            <div class="question">
+                <p>36.Which of the following conservative strategies directly involve community participation </p>
+                <input type="radio" name="q36" value="1"> JFM<br>
+                <input type="radio" name="q36" value="0"> Chipko Movement<br>
+                <input type="radio" name="q36" value="0">Beej Bachao Andolan <br>
+                <input type="radio" name="q36" value="0">Navdanya Andolan <br>
+            </div>
+            <div class="question">
+                <p>37.Manas Tiger Reserve is located in </p>
+                <input type="radio" name="q37" value="0"> Tamil Nadu<br>
+                <input type="radio" name="q37" value="0"> Kerala <br>
+                <input type="radio" name="q37" value="1">Assama <br>
+                <input type="radio" name="q37" value="0"> Orissa<br>
+            </div>
+            <div class="question">
+                <p>38.Which of the following was the first state to pass resolution for Joint Forest Management </p>
+                <input type="radio" name="q38" value="0"> Tamil Nadu<br>
+                <input type="radio" name="q38" value="0"> Kerala <br>
+                <input type="radio" name="q38" value="0">Assama <br>
+                <input type="radio" name="q38" value="1"> Orissa<br>
+            </div>
+            <div class="question">
+               <p>39.Which of the following is not a major factor responsible for deforestation in India?</p>
+                <input type="radio" name="q39" value="0"> Colonial rule<br>
+                <input type="radio" name="q39" value="1"> Adivasis<br>
+                <input type="radio" name="q39" value="0">Large scale developmental projects <br>
+                <input type="radio" name="q39" value="0"> Agricultural expansion<br>
+            </div>
+            <div class="question">
+                <p>40.what is the sum total all the varieties of species of plants,animals,microrganism living on earth
+                </p>
+                <input type="radio" name="q40" value="0"> Ecosystem<br>
+                <input type="radio" name="q40" value="0"> flora<br>
+                <input type="radio" name="q40" value="0">Fauna<br>
+                <input type="radio" name="q40" value="1"> Biodiversity<br>
+            </div>
+            <button type="button" onclick="SubmitQuiz()">Submit</button>
+            <h3 id="result"></h3>
+            <p id="attempinfo"></p>
+    </div>
+    </form>
+</body>
+
+</html>
